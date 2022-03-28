@@ -1,0 +1,16 @@
+name: "Generate Stream Deck plugin file"
+on: [push]
+
+jobs:
+  generate-plugin-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+      - name: Create Stream Deck Plugin bundle
+        run: zip -r dev.mdawson.agh.streamDeckPlugin dev.mdawson.agh.sdPlugin/ || true
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dev.mdawson.agh.streamDeckPlugin
+          path: dev.mdawson.agh.streamDeckPlugin
+          if-no-files-found: warn
