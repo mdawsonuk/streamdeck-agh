@@ -7,5 +7,5 @@ You should create a symbolic link between where you are storing the repo and the
 This can be done with Windows Command Prompt (cmd.exe) by making a directory symbolic link.
 
 ```bash
-mklink /D "%appdata%\Elgato\St reamDeck\Plugins\dev.mdawson.agh.sdPlugin" "path\to\repo\streamdeck-agh\dev.mdawson.agh.sdPlugin"
+mklink /D "%appdata%\Elgato\StreamDeck\Plugins\dev.mdawson.agh.sdPlugin" "path\to\repo\streamdeck-agh\dev.mdawson.agh.sdPlugin"
 ```
