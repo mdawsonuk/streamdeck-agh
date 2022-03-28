@@ -36,6 +36,7 @@ function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegist
 function storeSettings() {
     let info = document.querySelector("#agh-info-input").value;
     let url = document.querySelector("#agh-url-input").value;
+    let https = document.querySelector("#agh-https-input").checked;
     let username = document.querySelector("#agh-username-input").value;
     let password = document.querySelector("#agh-password-input").value;
     send({
@@ -44,6 +45,7 @@ function storeSettings() {
         "payload": {
             "agh_info": info,
             "agh_url": url,
+            "agh_https": https,
             "agh_username": username,
             "agh_password": password
         }
@@ -53,6 +55,7 @@ function storeSettings() {
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#agh-info-input").onchange = storeSettings;
     document.querySelector("#agh-url-input").onchange = storeSettings;
+    document.querySelector("#agh-https-input").onchange = storeSettings;
     document.querySelector("#agh-username-input").onchange = storeSettings;
     document.querySelector("#agh-password-input").onchange = storeSettings;
 });

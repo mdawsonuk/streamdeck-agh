@@ -28,19 +28,26 @@
 
         <div class="sdpi-item">
             <div class="sdpi-item-label">URL</div>
-            <input type="text" class="sdpi-item-value" id="agh-url-input" value=""
-                placeholder="The URL used to access AdGuard Home">
+            <input type="text" class="sdpi-item-value" id="agh-url-input" value="" required
+                placeholder="The URL used to access AdGuard Home"
+                pattern="[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)">
+        </div>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Uses HTTPS</div>
+            <input class="sdpi-item-value" id="agh-https-input" type="checkbox">
+            <label for="agh-https-input"><span></span>Enable for HTTPS</label>
         </div>
 
         <div class="sdpi-item">
             <div class="sdpi-item-label">Username</div>
-            <input type="text" class="sdpi-item-value" id="agh-username-input" value=""
+            <input type="text" class="sdpi-item-value" id="agh-username-input" value="" required
                 placeholder="The Username used to sign in to AdGuard Home">
         </div>
 
         <div class="sdpi-item">
             <div class="sdpi-item-label">Password</div>
-            <input type="password" class="sdpi-item-value" id="agh-password-input" value=""
+            <input type="password" class="sdpi-item-value" id="agh-password-input" value="" required
                 placeholder="The Password used to sign into AdGuard Home">
         </div>
     </div>
