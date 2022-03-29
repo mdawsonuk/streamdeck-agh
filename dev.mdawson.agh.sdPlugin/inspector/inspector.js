@@ -92,6 +92,15 @@ function log(inMessage) {
     }
 }
 
+function testApi() {
+    agh = new AdGuardHomeAPI(
+        globalSettings.agh_url, 
+        globalSettings.agh_https,
+        globalSettings.agh_username,
+        globalSettings.agh_password);
+    agh.testConnection();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#agh-info-input").onchange = storeSettings;
 
@@ -99,4 +108,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#agh-https-input").onchange = storeGlobalSettings;
     document.querySelector("#agh-username-input").onchange = storeGlobalSettings;
     document.querySelector("#agh-password-input").onchange = storeGlobalSettings;
+
+    document.querySelector("#agh-test-api-button").onclick = testApi;
 });
