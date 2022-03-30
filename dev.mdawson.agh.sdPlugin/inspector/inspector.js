@@ -44,15 +44,18 @@ function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegist
 
     let settings = actionInfo.payload.settings;
     document.querySelector("#agh-info-input").value = settings.agh_info ? settings.agh_info : "none";
+    document.querySelector("#agh-polling-input").value = settings.agh_polling_interval ? settings.agh_polling_interval : "60";
 }
 
 function storeSettings() {
     let info = document.querySelector("#agh-info-input").value;
+    let polling = document.querySelector("#agh-polling-input").value;
     send({
         "event": "setSettings",
         "context": context,
         "payload": {
             "agh_info": info,
+            "agh_polling_interval": polling
         }
     });
 }
@@ -97,12 +100,14 @@ function testApi() {
         globalSettings.agh_url, 
         globalSettings.agh_https,
         globalSettings.agh_username,
-        globalSettings.agh_password);
+        globalSettings.agh_password
+    );
     agh.testConnection();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#agh-info-input").onchange = storeSettings;
+    document.querySelector("#agh-polling-input").onchange = storeSettings;
 
     document.querySelector("#agh-url-input").onchange = storeGlobalSettings;
     document.querySelector("#agh-https-input").onchange = storeGlobalSettings;

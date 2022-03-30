@@ -25,6 +25,20 @@
             </select>
         </div>
 
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Polling Interval</div>
+            <select name="stat" id="agh-polling-input" class="sdpi-item-value select">
+                <option value="15">15 seconds</option>
+                <option value="30">30 seconds</option>
+                <option value="45">45 seconds</option>
+                <option value="60">1 minute</option>
+                <option value="90">1 minute, 30 seconds</option>
+                <option value="120">2 minutes</option>
+                <option value="150">2 minutes, 30 seconds</option>
+                <option value="300">5 minutes</option>
+            </select>
+        </div>
+
         <div class="sdpi-heading">Authentication</div>
 
         <div class="sdpi-item">
@@ -55,6 +69,9 @@
         <div class="sdpi-item">
             <div class="sdpi-item-label">Test Connection</div>
             <button class="sdpi-item-value max20" id="agh-test-api-button">Test</button>
+            <!--<details class="message">
+                <summary style="color: green">Success!</summary>
+            </details>-->
         </div>
     </div>
 </body>
