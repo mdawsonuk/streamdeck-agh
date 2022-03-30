@@ -3,11 +3,6 @@ var action = null;
 var context = null;
 var globalSettings = {};
 
-// Send data over the Websocket to the Elgato Stream Deck software
-function send(data) {
-    websocket.send(JSON.stringify(data));
-}
-
 // called by Stream Deck when the property inspector is initialised
 function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegisterEvent, inInfo, inActionInfo) {
     websocket = new WebSocket(`ws://127.0.0.1:${inPort}`);
@@ -27,7 +22,7 @@ function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegist
         let event = jsonObj.event;
         let jsonPayload = jsonObj.payload;
 
-        if (event === 'didReceiveGlobalSettings') {
+        if (event === "didReceiveGlobalSettings") {
             // Set global plugin settings
             globalSettings = jsonPayload.settings;
 
@@ -75,24 +70,6 @@ function storeGlobalSettings() {
             "agh_password": globalSettings.agh_password
         }
     });
-}
-
-// Log to the global log file
-function log(inMessage) {
-    // Log to the developer console
-    let time = new Date();
-    let timeString = time.toLocaleDateString() + ' ' + time.toLocaleTimeString();
-    console.log(timeString, inMessage);
-
-    // Log to the Stream Deck log file
-    if (websocket) {
-        websocket.send(JSON.stringify({
-            event: 'logMessage',
-            payload: {
-                message: inMessage,
-            },
-        }));
-    }
 }
 
 function testApi() {
