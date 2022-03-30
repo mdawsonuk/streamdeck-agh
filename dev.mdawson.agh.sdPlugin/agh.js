@@ -13,6 +13,18 @@ class AdGuardHomeAPI {
         });
     }
 
+    getRuleCount(callback) {
+        this.request("filtering/status", response => {
+            let count = 0;
+            for (let index in response.data.filters) {
+                if (response.data.filters[index].enabled) {
+                    count += response.data.filters[index].rules_count;
+                }
+            }
+            callback(count);
+        })
+    }
+
     //#region Stats
 
     getDnsQueryCount(callback) {
@@ -20,6 +32,7 @@ class AdGuardHomeAPI {
     }
 
     getBlockPercentage(callback) {
+        // Empty string to get all stats data returned
         this.statsRequest("", data => {
             // Avoid dividing by zero
             if (data.num_dns_queries === 0) {

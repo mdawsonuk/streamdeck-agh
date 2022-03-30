@@ -49,8 +49,8 @@ function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, in
                 log("Updating instances with new global settings");
                 updateStats(context);
             }
-        } else if (event === "keyUp") {
-
+        } else if (event === "keyDown") {
+            alert("Key presses are not yet implemented");
         }
     }
 }
@@ -95,8 +95,9 @@ function updateStats(context) {
         case "avg_processing_time":
             adGuardHome.getAverageProcessingTime(c => setTitle(context, c.toFixed(0) + "ms"))
             break;
-        // case "rule_count":
-            // break;
+        case "rule_count":
+            adGuardHome.getRuleCount(c => setTitle(context, c.toLocaleString() + "\nrules"))
+            break;
         default:
             setTitle(context, "");
             break;
