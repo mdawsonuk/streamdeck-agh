@@ -96,13 +96,28 @@ function log(inMessage) {
 }
 
 function testApi() {
-    agh = new AdGuardHomeAPI(
-        globalSettings.agh_url, 
+    let status = document.querySelector("#agh-connection-status");
+    let agh = new AdGuardHomeAPI(
+        globalSettings.agh_url,
         globalSettings.agh_https,
         globalSettings.agh_username,
         globalSettings.agh_password
     );
-    agh.testConnection();
+    status.innerHTML = "";
+    agh.testConnection((auth, timeout) => {
+        if (timeout) {
+            status.innerHTML = "Request timed out";
+            status.style.color = "yellow";
+        } else {
+            if (auth) {
+                status.innerHTML = "Success!";
+                status.style.color = "green";
+            } else {
+                status.innerHTML = "Incorrect credentials";
+                status.style.color = "red";
+            }
+        }
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

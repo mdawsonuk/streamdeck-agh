@@ -7,13 +7,9 @@ class AdGuardHomeAPI {
         this.password = password;
     }
 
-    testConnection() {
+    testConnection(callback) {
         this.request("status", result => {
-            if (result.status === 200) {
-                alert("Successfully connected to AdGuard Home API");
-            } else if (result.status === 403) {
-                alert("Error connecting to AdGuard Home API: Username or Password incorrect");
-            }
+            callback(result.status == 200, result.status === -1);
         });
     }
 
@@ -71,6 +67,7 @@ class AdGuardHomeAPI {
         var url = proto + this.url + "/control/" + endpoint;
 
         var xhr = new XMLHttpRequest();
+        xhr.timeout = 2000;
         xhr.open("GET", url);
 
         xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
@@ -79,10 +76,17 @@ class AdGuardHomeAPI {
             if (xhr.readyState === 4) {
                 callback({
                     status: xhr.status,
-                    data: JSON.parse(xhr.response)
+                    data: xhr.status == 200 ? JSON.parse(xhr.response) : null
                 })
             }
         };
+
+        xhr.ontimeout = function () {
+            callback({
+                status: -1,
+                data: null
+            })
+        }
 
         xhr.send();
     }
