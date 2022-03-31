@@ -1,0 +1,112 @@
+{
+  "SDKVersion": 2,
+  "Author": "Matt Dawson",
+  "CodePath": "code.html",
+  "PropertyInspectorPath": "inspector/index.html",
+  "Description": "Monitor and Control your AdGuard Home server from your Stream Deck",
+  "Name": "AdGuard Home",
+  "Icon": "images/agh",
+  "Category": "AdGuard Home",
+  "CategoryIcon": "images/agh",
+  "URL": "https://github.com/mdawsonuk/streamdeck-agh",
+  "Version": "0.1.0",
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.11"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Software": {
+    "MinimumVersion": "5.0"
+  },
+  "Actions": [
+    {
+      "Icon": "images/agh",
+      "Name": "Toggle AdGuard Home",
+      "States": [
+        {
+          "Image": "images/agh"
+        },
+        {
+          "Image": "images/agh_off"
+        }
+      ],
+      "Tooltip": "Completely toggles AdGuard Home",
+      "UUID": "dev.mdawson.agh.toggle"
+    },
+    {
+      "Icon": "images/agh",
+      "Name": "Toggle AdGuard Filtering",
+      "States": [
+        {
+          "Image": "images/agh"
+        },
+        {
+          "Image": "images/agh_off"
+        }
+      ],
+      "Tooltip": "Toggles AdGuard Home Filtering",
+      "UUID": "dev.mdawson.agh.toggle_filtering"
+    },
+    {
+      "Icon": "images/agh",
+      "Name": "Toggle AdGuard Safe Browsing",
+      "States": [
+        {
+          "Image": "images/agh"
+        },
+        {
+          "Image": "images/agh_off"
+        }
+      ],
+      "Tooltip": "Toggles AdGuard Home Safe Browsing",
+      "UUID": "dev.mdawson.agh.toggle_safe_browsing"
+    },
+    {
+      "Icon": "images/agh",
+      "Name": "Toggle AdGuard Parental Controls",
+      "States": [
+        {
+          "Image": "images/agh"
+        },
+        {
+          "Image": "images/agh_off"
+        }
+      ],
+      "Tooltip": "Toggles AdGuard Home Parentals Controls",
+      "UUID": "dev.mdawson.agh.toggle_parental_controls"
+    },
+    {
+      "Icon": "images/agh",
+      "Name": "Toggle AdGuard Safe Search",
+      "States": [
+        {
+          "Image": "images/agh"
+        },
+        {
+          "Image": "images/agh_off"
+        }
+      ],
+      "Tooltip": "Toggles AdGuard Home Safe Search (Google, Bing, etc.)",
+      "UUID": "dev.mdawson.agh.toggle_safe_search"
+    },
+    {
+      "Icon": "images/agh",
+      "Name": "Toggle AdGuard Query Log",
+      "States": [
+        {
+          "Image": "images/agh"
+        },
+        {
+          "Image": "images/agh_off"
+        }
+      ],
+      "Tooltip": "Toggles AdGuard Home Query Log",
+      "UUID": "dev.mdawson.agh.toggle_query_log"
+    }
+  ]
+}

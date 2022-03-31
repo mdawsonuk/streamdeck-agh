@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="inspector.css">
+    <script src="../agh.js"></script>
+    <script src="../utils.js"></script>
+    <script src="inspector.js"></script>
+</head>
+
+<body>
+    <div class="sdpi-wrapper">
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Display Info</div>
+            <select name="stat" id="agh-info-input" class="sdpi-item-value select">
+                <option value="none">None</option>
+                <option value="dns_queries">DNS Queries</option>
+                <option value="blocked_by_filters">Blocked by Filters</option>
+                <option value="blocked_percentage">Blocked Percentage</option>
+                <option value="blocked_malicious">Blocked Malware/Phishing</option>
+                <option value="blocked_adult">Blocked Adult Websites</option>
+                <option value="enforced_safesearch">Enforced Safe Search</option>
+                <option value="avg_processing_time">Average Processing Time</option>
+                <option value="rule_count">Rule Count</option>
+            </select>
+        </div>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Polling Interval</div>
+            <select name="stat" id="agh-polling-input" class="sdpi-item-value select">
+                <option value="15">15 seconds</option>
+                <option value="30">30 seconds</option>
+                <option value="45">45 seconds</option>
+                <option value="60">1 minute</option>
+                <option value="90">1 minute, 30 seconds</option>
+                <option value="120">2 minutes</option>
+                <option value="150">2 minutes, 30 seconds</option>
+                <option value="300">5 minutes</option>
+            </select>
+        </div>
+
+        <div class="sdpi-heading">Authentication</div>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">URL</div>
+            <input type="text" class="sdpi-item-value" id="agh-url-input" value="" required
+                placeholder="The URL used to access AdGuard Home"
+                pattern="[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)">
+        </div>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Uses HTTPS</div>
+            <input class="sdpi-item-value" id="agh-https-input" type="checkbox">
+            <label for="agh-https-input"><span></span>Enable for HTTPS</label>
+        </div>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Username</div>
+            <input type="text" class="sdpi-item-value" id="agh-username-input" value="" required
+                placeholder="The Username used to sign in to AdGuard Home">
+        </div>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Password</div>
+            <input type="password" class="sdpi-item-value" id="agh-password-input" value="" required
+                placeholder="The Password used to sign into AdGuard Home">
+        </div>
+
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Test Connection</div>
+            <button class="sdpi-item-value max20" id="agh-test-api-button">Test</button>
+            <details class="message">
+                <summary id="agh-connection-status"></summary>
+            </details>
+        </div>
+    </div>
+</body>
+
+</html>

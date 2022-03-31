@@ -1,0 +1,29 @@
+{
+  "Description": "Monitor and Control your AdGuard Home server from your Stream Deck", 
+  "Name": "AdGuard Home", 
+  "Category": "AdGuard Home", 
+  "dev.mdawson.agh.toggle": {
+    "Name": "Toggle AdGuard Home", 
+    "Tooltip": "Completely toggles AdGuard Home"
+  },
+  "dev.mdawson.agh.toggle_filtering": {
+    "Name": "Toggle AdGuard Filtering", 
+    "Tooltip": "Toggles AdGuard Home Filtering"
+  },
+  "dev.mdawson.agh.toggle_safe_browsing": {
+    "Name": "Toggle AdGuard Safe Browsing", 
+    "Tooltip": "Toggles AdGuard Home Safe Browsing"
+  },
+  "dev.mdawson.agh.toggle_parental_controls": {
+    "Name": "Toggle AdGuard Parental Controls", 
+    "Tooltip": "Toggles AdGuard Home Parentals Controls"
+  },
+  "dev.mdawson.agh.toggle_safe_search": {
+    "Name": "Toggle AdGuard Safe Search", 
+    "Tooltip": "Toggles AdGuard Home Safe Search (Google, Bing, etc.)"
+  },
+  "dev.mdawson.agh.toggle_query_log": {
+    "Name": "Toggle AdGuard Query Log", 
+    "Tooltip": "Toggles AdGuard Home Query Log"
+  }
+}
