@@ -81,18 +81,20 @@ function testApi() {
         globalSettings.agh_password
     );
     status.innerHTML = "";
-    agh.testConnection((auth, timeout) => {
-        if (timeout) {
-            status.innerHTML = "Request timed out";
-            status.style.color = "yellow";
-        } else {
-            if (auth) {
+    agh.testConnection(result => {
+        switch (result) {
+            case OK:
                 status.innerHTML = "Success!";
                 status.style.color = "green";
-            } else {
+                break;
+            case AUTH_ERROR:
                 status.innerHTML = "Incorrect credentials";
                 status.style.color = "red";
-            }
+                break;
+            case TIMEOUT:
+                status.innerHTML = "Request timed out";
+                status.style.color = "yellow";
+                break;
         }
     });
 }

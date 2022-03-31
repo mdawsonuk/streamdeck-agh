@@ -75,28 +75,28 @@ function updateStats(context) {
     }
     switch (instances[context].settings.agh_info) {
         case "dns_queries":
-            adGuardHome.getDnsQueryCount(c => setTitle(context, c + "\nqueries"));
+            adGuardHome.getDnsQueryCount((c, s) => setTitle(context, c + "\nqueries", s));
             break;
         case "blocked_by_filters":
-            adGuardHome.getFilterBlockCount(c => setTitle(context, c + "\nqueries\nblocked"))
+            adGuardHome.getFilterBlockCount((c, s) => setTitle(context, c + "\nqueries\nblocked", s))
             break;
         case "blocked_percentage":
-            adGuardHome.getBlockPercentage(c => setTitle(context, c + "%\nblocked"))
+            adGuardHome.getBlockPercentage((c, s) => setTitle(context, c + "%\nblocked", s))
             break;
         case "blocked_malicious":
-            adGuardHome.getSafeBrowsingCount(c => setTitle(context, c + " malicious\nqueries\nblocked"))
+            adGuardHome.getSafeBrowsingCount((c, s) => setTitle(context, c + " malicious\nqueries\nblocked", s))
             break;
         case "blocked_adult":
-            adGuardHome.getFilterBlockCount(c => setTitle(context, c + "\nadult sites\nblocked"))
+            adGuardHome.getFilterBlockCount((c, s) => setTitle(context, c + "\nadult sites\nblocked", s))
             break;
         case "enforced_safesearch":
-            adGuardHome.getSafeSearchCount(c => setTitle(context, c + "\nsafe search\nrequests\nenforced"))
+            adGuardHome.getSafeSearchCount((c, s) => setTitle(context, c + "\nsafe search\nrequests\nenforced", s))
             break;
         case "avg_processing_time":
-            adGuardHome.getAverageProcessingTime(c => setTitle(context, c.toFixed(0) + "ms"))
+            adGuardHome.getAverageProcessingTime((c, s) => setTitle(context, c.toFixed(0) + "ms", s))
             break;
         case "rule_count":
-            adGuardHome.getRuleCount(c => setTitle(context, c.toLocaleString() + "\nrules"))
+            adGuardHome.getRuleCount((c, s) => setTitle(context, c.toLocaleString() + "\nrules", s))
             break;
         default:
             setTitle(context, "");
@@ -126,12 +126,35 @@ function getInterval(interval) {
     }
 }
 
-function setTitle(context, title) {
-    send({
-        "event": "setTitle",
-        "context": context,
-        "payload": {
-            "title": title
-        }
-    });
+function setTitle(context, title, status) {
+    switch (status) {
+        default:
+            send({
+                "event": "setTitle",
+                "context": context,
+                "payload": {
+                    "title": title
+                }
+            });
+            break;
+        case AUTH_ERROR:
+            send({
+                "event": "setTitle",
+                "context": context,
+                "payload": {
+                    "title": "Incorrect\nCredentials"
+                }
+            });
+            break;
+        case TIMEOUT:
+            send({
+                "event": "setTitle",
+                "context": context,
+                "payload": {
+                    "title": "Connection\nTimed\nOut"
+                }
+            });
+            break;
+    }
+
 }

@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/mdawsonuk/streamdeck-agh">
-    <img src=".github/images/header.png" alt="HIBP Logo" width="580" height="128">
+    <img src="https://cdn.adguard.com/public/Adguard/Common/adguard_home.svg" width="300px" alt="AdGuard Home" />
   </a>
 
   <h1 align="center">AdGuard Home Stream Deck Plugin</h1>
@@ -26,7 +26,7 @@
   </p>
 </p>
 
-Big thanks to [John Holbrook's streamdeck-pihole](https://github.com/johnholbrook/streamdeck-pihole) for providing a great project for providing great reading material and inspiration to understand how to create the plugin
+Big thanks to [John Holbrook's streamdeck-pihole](https://github.com/johnholbrook/streamdeck-pihole) for providing a great project, great reading material and inspiration to understand how to create the plugin
 
 ## Contributing
 
