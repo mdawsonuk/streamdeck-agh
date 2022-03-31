@@ -1,7 +1,8 @@
 const OK = 0;
 const AUTH_ERROR = 1;
 const TIMEOUT = 2;
-
+const NOT_FOUND = 4;
+const UNKNOWN_ERROR = 256;
 
 class AdGuardHomeAPI {
     constructor(url, https, username, password) {
@@ -95,8 +96,20 @@ class AdGuardHomeAPI {
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
+                let status = OK;
+                switch (xhr.status) {
+                    case 200:
+                        break;
+                    case 403:
+                        status = AUTH_ERROR;
+                    case 404:
+                        status = NOT_FOUND;
+                    default:
+                        status = UNKNOWN_ERROR;
+                        break;
+                }
                 callback({
-                    status: xhr.status === 200 ? OK : AUTH_ERROR,
+                    status: status,
                     data: xhr.status === 200 ? JSON.parse(xhr.response) : null
                 })
             }

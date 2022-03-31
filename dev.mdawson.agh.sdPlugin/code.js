@@ -155,6 +155,24 @@ function setTitle(context, title, status) {
                 }
             });
             break;
+        case NOT_FOUND:
+            send({
+                "event": "setTitle",
+                "context": context,
+                "payload": {
+                    "title": "AdGuard Home\nAPI not\nfound"
+                }
+            });
+            break;
+        case UNKNOWN_ERROR:
+            send({
+                "event": "setTitle",
+                "context": context,
+                "payload": {
+                    "title": "Unknown\nError\nOccured"
+                }
+            });
+            break;
     }
 
 }
