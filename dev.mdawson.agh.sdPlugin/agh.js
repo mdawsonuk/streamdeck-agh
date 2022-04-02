@@ -18,6 +18,24 @@ class AdGuardHomeAPI {
         });
     }
 
+    //#region Protection
+
+    getProtectionEnabled(callback) {
+        this.request("dns_info", result => {
+            callback(result.data["protection_enabled"] == true);
+        });
+    }
+
+    setProtectionEnabled(currentStatus, callback) {
+        if (currentStatus) {
+            this.request("dns_config", result => callback(result.status === OK), "POST", { protection_enabled: false });
+        } else {
+            this.request("dns_config", result => callback(result.status === OK), "POST", { protection_enabled: true });
+        }
+    }
+
+    //#endregion
+
     //#region Safe Search
 
     getSafesearchEnabled(callback) {
@@ -100,7 +118,7 @@ class AdGuardHomeAPI {
 
     //#endregion
 
-    request(endpoint, callback, method = "GET") {
+    request(endpoint, callback, method = "GET", data = null) {
         var proto = this.https ? "https://" : "http://";
 
         var url = proto + this.url + "/control/" + endpoint;
@@ -146,6 +164,10 @@ class AdGuardHomeAPI {
             })
         }
 
-        xhr.send();
+        if (data !== null) {
+            xhr.send(data);
+        } else {
+            xhr.send();
+        }
     }
 }

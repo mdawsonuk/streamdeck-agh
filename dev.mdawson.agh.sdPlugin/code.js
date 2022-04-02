@@ -3,6 +3,7 @@ var instances = {}
 var globalSettings = null;
 var adGuardHome = null;
 
+const TOGGLE_PROTECTION  = "dev.mdawson.agh.toggle_protection"
 const TOGGLE_SAFE_SEARCH = "dev.mdawson.agh.toggle_safe_search";
 
 // called by Stream Deck when the plugin is initialised
@@ -74,11 +75,29 @@ function setupInstance(context, action, settings) {
 }
 
 function elgatoOnKeyDown(context, action, run) {
-    if (action === TOGGLE_SAFE_SEARCH) {
+    if (action === TOGGLE_PROTECTION) {
+        protectionButton(context, run);
+    } else if (action === TOGGLE_SAFE_SEARCH) {
         safeSearchButton(context, run);
     } else {
         // alert("Key presses are not yet implemented");
         log("Running keyDown for " + action);
+    }
+}
+
+function protectionButton(context, run) {
+    if (run) {
+        adGuardHome.setProtectionEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+            }
+        });
+    } else {
+        adGuardHome.getProtectionEnabled(state => {
+            instances[context].state = state;
+            setState(context, instances[context].state);
+        });
     }
 }
 
