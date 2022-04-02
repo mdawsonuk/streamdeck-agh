@@ -3,6 +3,8 @@ var instances = {}
 var globalSettings = null;
 var adGuardHome = null;
 
+const TOGGLE_SAFE_SEARCH = "dev.mdawson.agh.toggle_safe_search";
+
 // called by Stream Deck when the plugin is initialised
 function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, inInfo) {
     websocket = new WebSocket("ws://127.0.0.1:" + inPort);
@@ -48,9 +50,11 @@ function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, in
             for (let context in instances) {
                 log("Updating instances with new global settings");
                 updateStats(context);
+                // Just get the state
+                elgatoOnKeyDown(context, instances[context].action, false);
             }
         } else if (event === "keyDown") {
-            alert("Key presses are not yet implemented");
+            elgatoOnKeyDown(context, action, true);
         }
     }
 }
@@ -67,6 +71,29 @@ function setupInstance(context, action, settings) {
     instances[context].poller = setInterval(updateStats, getInterval(settings.agh_polling_interval), context);
     updateStats(context);
     log(JSON.stringify(instances));
+}
+
+function elgatoOnKeyDown(context, action, run) {
+    if (action === TOGGLE_SAFE_SEARCH) {
+        safeSearchButton(context, run);
+    } else {
+        // alert("Key presses are not yet implemented");
+        log("Running keyDown for " +  action);
+    }
+}
+
+function safeSearchButton(context, run) {
+    if (run) {
+        adGuardHome.setSafesearchEnabled(instances[context].state, () => {
+            instances[context].state = !instances[context].state;
+            setState(context, instances[context].state);
+        });
+    } else {
+        adGuardHome.getSafesearchEnabled(state => {
+            instances[context].state = state;
+            setState(context, instances[context].state);
+        });
+    }
 }
 
 function updateStats(context) {
@@ -175,4 +202,14 @@ function setTitle(context, title, status) {
             break;
     }
 
+}
+
+function setState(context, state) {
+    send({
+        "event": "setState",
+        "context": context,
+        "payload": {
+            "state": state == true ? 0 : 1
+        }
+    });
 }

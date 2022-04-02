@@ -18,6 +18,26 @@ class AdGuardHomeAPI {
         });
     }
 
+    //#region Safe Search
+
+    getSafesearchEnabled(callback) {
+        this.request("safesearch/status", result => {
+            callback(result.data["enabled"] == true);
+        });
+    }
+
+    setSafesearchEnabled(currentStatus, callback) {
+        if (currentStatus) {
+            this.request("safesearch/disable", result => callback(), "POST");
+        } else {
+            this.request("safesearch/enable", result => callback(), "POST");
+        }
+    }
+
+    //#endregion
+
+    //#region Stats
+
     getRuleCount(callback) {
         this.request("filtering/status", (response, status) => {
             let count = 0;
@@ -30,8 +50,6 @@ class AdGuardHomeAPI {
         })
     }
 
-    //#region Stats
-
     getDnsQueryCount(callback) {
         this.statsRequest("num_dns_queries", (d, s) => callback(d, s));
     }
@@ -40,11 +58,10 @@ class AdGuardHomeAPI {
         // Empty string to get all stats data returned
         this.statsRequest("", (data, status) => {
             // Avoid dividing by zero
-            log(status);
             if (status !== OK || data === null) {
                 callback(0, status);
             }
-            if (data.num_dns_queries === 0) {
+            if (data.num_blocked_filtering === 0 || data.num_dns_queries === 0) {
                 callback(0, status);
             }
             callback((data.num_blocked_filtering / data.num_dns_queries * 100).toFixed(2), status);
@@ -83,14 +100,14 @@ class AdGuardHomeAPI {
 
     //#endregion
 
-    request(endpoint, callback) {
+    request(endpoint, callback, method = "GET") {
         var proto = this.https ? "https://" : "http://";
 
         var url = proto + this.url + "/control/" + endpoint;
 
         var xhr = new XMLHttpRequest();
         xhr.timeout = 2000;
-        xhr.open("GET", url);
+        xhr.open(method, url);
 
         xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
 
@@ -108,10 +125,17 @@ class AdGuardHomeAPI {
                         status = UNKNOWN_ERROR;
                         break;
                 }
-                callback({
-                    status: status,
-                    data: xhr.status === 200 ? JSON.parse(xhr.response) : null
-                })
+                if (method == "GET") {
+                    callback({
+                        status: status,
+                        data: xhr.status === 200 ? JSON.parse(xhr.response) : null
+                    })
+                } else if (method == "POST") {
+                    callback({
+                        status: status,
+                        data: null
+                    })
+                }
             }
         };
 
