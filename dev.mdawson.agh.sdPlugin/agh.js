@@ -54,6 +54,24 @@ class AdGuardHomeAPI {
 
     //#endregion
 
+    //#region Query Log
+
+    getQueryLogEnabled(callback) {
+        this.request("querylog_info", result => {
+            callback(result.data["enabled"] == true);
+        });
+    }
+
+    setQueryLogEnabled(currentStatus, callback) {
+        if (currentStatus) {
+            this.request("querylog_config", result => callback(result.status === OK), "POST", { enabled: false });
+        } else {
+            this.request("querylog_config", result => callback(result.status === OK), "POST", { enabled: true });
+        }
+    }
+
+    //#endregion
+
     //#region Stats
 
     getRuleCount(callback) {
@@ -165,7 +183,7 @@ class AdGuardHomeAPI {
         }
 
         if (data !== null) {
-            xhr.send(data);
+            xhr.send(JSON.stringify(data));
         } else {
             xhr.send();
         }

@@ -3,8 +3,9 @@ var instances = {}
 var globalSettings = null;
 var adGuardHome = null;
 
-const TOGGLE_PROTECTION  = "dev.mdawson.agh.toggle_protection"
+const TOGGLE_PROTECTION = "dev.mdawson.agh.toggle_protection";
 const TOGGLE_SAFE_SEARCH = "dev.mdawson.agh.toggle_safe_search";
+const TOGGLE_QUERY_LOG = "dev.mdawson.agh.toggle_query_log";
 
 // called by Stream Deck when the plugin is initialised
 function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, inInfo) {
@@ -75,13 +76,19 @@ function setupInstance(context, action, settings) {
 }
 
 function elgatoOnKeyDown(context, action, run) {
-    if (action === TOGGLE_PROTECTION) {
-        protectionButton(context, run);
-    } else if (action === TOGGLE_SAFE_SEARCH) {
-        safeSearchButton(context, run);
-    } else {
-        // alert("Key presses are not yet implemented");
-        log("Running keyDown for " + action);
+    switch (action) {
+        case TOGGLE_PROTECTION:
+            protectionButton(context, run);
+            break;
+        case TOGGLE_SAFE_SEARCH:
+            safeSearchButton(context, run);
+            break;
+        case TOGGLE_QUERY_LOG:
+            queryLogButton(context, run);
+            break;
+        default:
+            log("Running keyDown for " + action);
+            break;
     }
 }
 
@@ -111,6 +118,22 @@ function safeSearchButton(context, run) {
         });
     } else {
         adGuardHome.getSafesearchEnabled(state => {
+            instances[context].state = state;
+            setState(context, instances[context].state);
+        });
+    }
+}
+
+function queryLogButton(context, run) {
+    if (run) {
+        adGuardHome.setQueryLogEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+            }
+        });
+    } else {
+        adGuardHome.getQueryLogEnabled(state => {
             instances[context].state = state;
             setState(context, instances[context].state);
         });
