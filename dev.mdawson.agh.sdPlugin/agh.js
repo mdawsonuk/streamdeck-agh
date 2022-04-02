@@ -28,9 +28,9 @@ class AdGuardHomeAPI {
 
     setSafesearchEnabled(currentStatus, callback) {
         if (currentStatus) {
-            this.request("safesearch/disable", result => callback(), "POST");
+            this.request("safesearch/disable", result => callback(result.status === OK), "POST");
         } else {
-            this.request("safesearch/enable", result => callback(), "POST");
+            this.request("safesearch/enable", result => callback(result.status === OK), "POST");
         }
     }
 

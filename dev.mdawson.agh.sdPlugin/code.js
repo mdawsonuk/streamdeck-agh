@@ -78,15 +78,17 @@ function elgatoOnKeyDown(context, action, run) {
         safeSearchButton(context, run);
     } else {
         // alert("Key presses are not yet implemented");
-        log("Running keyDown for " +  action);
+        log("Running keyDown for " + action);
     }
 }
 
 function safeSearchButton(context, run) {
     if (run) {
-        adGuardHome.setSafesearchEnabled(instances[context].state, () => {
-            instances[context].state = !instances[context].state;
-            setState(context, instances[context].state);
+        adGuardHome.setSafesearchEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+            }
         });
     } else {
         adGuardHome.getSafesearchEnabled(state => {
