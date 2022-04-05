@@ -5,6 +5,7 @@ var adGuardHome = null;
 
 const TOGGLE_PROTECTION = "dev.mdawson.agh.toggle_protection";
 const TOGGLE_FILTERING = "dev.mdawson.agh.toggle_filtering";
+const TOGGLE_SAFE_BROWSING = "dev.mdawson.agh.toggle_safe_browsing";
 const TOGGLE_SAFE_SEARCH = "dev.mdawson.agh.toggle_safe_search";
 const TOGGLE_QUERY_LOG = "dev.mdawson.agh.toggle_query_log";
 
@@ -84,6 +85,9 @@ function elgatoOnKeyDown(context, action, run) {
         case TOGGLE_FILTERING:
             filteringButton(context, run);
             break;
+        case TOGGLE_SAFE_BROWSING:
+            safeBrowsingButton(context, run);
+            break;
         case TOGGLE_SAFE_SEARCH:
             safeSearchButton(context, run);
             break;
@@ -124,6 +128,25 @@ function filteringButton(context, run) {
         adGuardHome.getFilteringEnabled(state => {
             instances[context].state = state;
             setState(context, instances[context].state);
+        });
+    }
+}
+
+function safeBrowsingButton(context, run) {
+    if (run) {
+        adGuardHome.setSafeBrowsingEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+                log("Set state for Safe Browsing to " + instances[context].state);
+            }
+        });
+    } else {
+        adGuardHome.getSafeBrowsingEnabled(state => {
+            log("Initial state for Safe Browsing is " + state);
+            instances[context].state = state;
+            setState(context, instances[context].state);
+            safeBrowsingButton(context, true)
         });
     }
 }

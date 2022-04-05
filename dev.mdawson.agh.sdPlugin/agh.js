@@ -54,6 +54,25 @@ class AdGuardHomeAPI {
 
     //#endregion
 
+    //#region Safe Browsing
+
+    getSafeBrowsingEnabled(callback) {
+        this.request("safebrowsing/status", result => {
+            callback(result.data["enabled"] == true);
+        });
+    }
+
+    setSafeBrowsingEnabled(currentStatus, callback) {
+        log("Updating Safe Browsing, current status is " + currentStatus);
+        if (currentStatus) {
+            this.request("safebrowsing/disable", result => callback(result.status === OK), "POST");
+        } else {
+            this.request("safebrowsing/enable", result => callback(result.status === OK), "POST");
+        }
+    }
+
+    //#endregion
+
     //#region Safe Search
 
     getSafesearchEnabled(callback) {
