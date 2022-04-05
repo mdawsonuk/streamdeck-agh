@@ -36,6 +36,24 @@ class AdGuardHomeAPI {
 
     //#endregion
 
+    //#region Filtering
+
+    getFilteringEnabled(callback) {
+        this.request("filtering/status", result => {
+            callback(result.data["enabled"] == true);
+        });
+    }
+
+    setFilteringEnabled(currentStatus, callback) {
+        if (currentStatus) {
+            this.request("filtering/config", result => callback(result.status === OK), "POST", { enabled: false });
+        } else {
+            this.request("filtering/config", result => callback(result.status === OK), "POST", { enabled: true });
+        }
+    }
+
+    //#endregion
+
     //#region Safe Search
 
     getSafesearchEnabled(callback) {

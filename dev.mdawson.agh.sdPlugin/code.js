@@ -4,6 +4,7 @@ var globalSettings = null;
 var adGuardHome = null;
 
 const TOGGLE_PROTECTION = "dev.mdawson.agh.toggle_protection";
+const TOGGLE_FILTERING = "dev.mdawson.agh.toggle_filtering";
 const TOGGLE_SAFE_SEARCH = "dev.mdawson.agh.toggle_safe_search";
 const TOGGLE_QUERY_LOG = "dev.mdawson.agh.toggle_query_log";
 
@@ -32,7 +33,7 @@ function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, in
         if (event == "willAppear") {
             setupInstance(context, action, jsonObj.payload.settings);
         } else if (event == "willDisappear") {
-            if ("poller" in instances[context]) {
+            if (instances[context] && "poller" in instances[context]) {
                 clearInterval(instances[context].poller);
             }
             delete instances[context];
@@ -80,6 +81,9 @@ function elgatoOnKeyDown(context, action, run) {
         case TOGGLE_PROTECTION:
             protectionButton(context, run);
             break;
+        case TOGGLE_FILTERING:
+            filteringButton(context, run);
+            break;
         case TOGGLE_SAFE_SEARCH:
             safeSearchButton(context, run);
             break;
@@ -102,6 +106,22 @@ function protectionButton(context, run) {
         });
     } else {
         adGuardHome.getProtectionEnabled(state => {
+            instances[context].state = state;
+            setState(context, instances[context].state);
+        });
+    }
+}
+
+function filteringButton(context, run) {
+    if (run) {
+        adGuardHome.setFilteringEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+            }
+        });
+    } else {
+        adGuardHome.getFilteringEnabled(state => {
             instances[context].state = state;
             setState(context, instances[context].state);
         });
