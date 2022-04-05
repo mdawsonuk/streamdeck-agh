@@ -63,11 +63,28 @@ class AdGuardHomeAPI {
     }
 
     setSafeBrowsingEnabled(currentStatus, callback) {
-        log("Updating Safe Browsing, current status is " + currentStatus);
         if (currentStatus) {
             this.request("safebrowsing/disable", result => callback(result.status === OK), "POST");
         } else {
             this.request("safebrowsing/enable", result => callback(result.status === OK), "POST");
+        }
+    }
+
+    //#endregion
+
+    //#region Parental Controls
+
+    getParentalControlsEnabled(callback) {
+        this.request("parental/status", result => {
+            callback(result.data["enabled"] == true);
+        });
+    }
+
+    setParentalControlsEnabled(currentStatus, callback) {
+        if (currentStatus) {
+            this.request("parental/disable", result => callback(result.status === OK), "POST");
+        } else {
+            this.request("parental/enable", result => callback(result.status === OK), "POST");
         }
     }
 

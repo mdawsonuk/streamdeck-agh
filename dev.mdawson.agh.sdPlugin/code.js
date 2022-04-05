@@ -6,6 +6,7 @@ var adGuardHome = null;
 const TOGGLE_PROTECTION = "dev.mdawson.agh.toggle_protection";
 const TOGGLE_FILTERING = "dev.mdawson.agh.toggle_filtering";
 const TOGGLE_SAFE_BROWSING = "dev.mdawson.agh.toggle_safe_browsing";
+const TOGGLE_PARENTAL_CONTROLS = "dev.mdawson.agh.toggle_parental_controls";
 const TOGGLE_SAFE_SEARCH = "dev.mdawson.agh.toggle_safe_search";
 const TOGGLE_QUERY_LOG = "dev.mdawson.agh.toggle_query_log";
 
@@ -71,6 +72,9 @@ function setupInstance(context, action, settings) {
     if ("poller" in instances[context]) {
         clearInterval(instances[context].poller);
     }
+    if (adGuardHome) {
+        elgatoOnKeyDown(context, action, false);
+    }
     // Set the timer to run based on what the user has set
     instances[context].poller = setInterval(updateStats, getInterval(settings.agh_polling_interval), context);
     updateStats(context);
@@ -87,6 +91,9 @@ function elgatoOnKeyDown(context, action, run) {
             break;
         case TOGGLE_SAFE_BROWSING:
             safeBrowsingButton(context, run);
+            break;
+        case TOGGLE_PARENTAL_CONTROLS:
+            parentalControlsButton(context, run);
             break;
         case TOGGLE_SAFE_SEARCH:
             safeSearchButton(context, run);
@@ -122,10 +129,12 @@ function filteringButton(context, run) {
             if (success) {
                 instances[context].state = !instances[context].state;
                 setState(context, instances[context].state);
+                log("Set state for Filtering to " + instances[context].state);
             }
         });
     } else {
         adGuardHome.getFilteringEnabled(state => {
+            log("Initial state for Filtering is " + state);
             instances[context].state = state;
             setState(context, instances[context].state);
         });
@@ -146,7 +155,24 @@ function safeBrowsingButton(context, run) {
             log("Initial state for Safe Browsing is " + state);
             instances[context].state = state;
             setState(context, instances[context].state);
-            safeBrowsingButton(context, true)
+        });
+    }
+}
+
+function parentalControlsButton(context, run) {
+    if (run) {
+        adGuardHome.setParentalControlsEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+                log("Set state for Parental Controls to " + instances[context].state);
+            }
+        });
+    } else {
+        adGuardHome.getParentalControlsEnabled(state => {
+            log("Initial state for Parental Controls is " + state);
+            instances[context].state = state;
+            setState(context, instances[context].state);
         });
     }
 }
