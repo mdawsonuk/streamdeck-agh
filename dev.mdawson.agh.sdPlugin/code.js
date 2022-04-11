@@ -227,7 +227,7 @@ function updateStats(context) {
             adGuardHome.getSafeBrowsingCount((c, s) => setTitle(context, c + " malicious\nqueries\nblocked", s))
             break;
         case "blocked_adult":
-            adGuardHome.getFilterBlockCount((c, s) => setTitle(context, c + "\nadult sites\nblocked", s))
+            adGuardHome.getParentalFilterCount((c, s) => setTitle(context, c + "\nadult sites\nblocked", s))
             break;
         case "enforced_safesearch":
             adGuardHome.getSafeSearchCount((c, s) => setTitle(context, c + "\nsafe search\nrequests\nenforced", s))
