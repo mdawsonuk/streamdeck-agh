@@ -7,7 +7,7 @@
   "Name": "AdGuard Home",
   "Icon": "images/agh",
   "Category": "AdGuard Home",
-  "CategoryIcon": "images/agh",
+  "CategoryIcon": "images/agh-category",
   "URL": "https://github.com/mdawsonuk/streamdeck-agh",
   "Version": "0.1.0",
   "OS": [
@@ -26,7 +26,7 @@
   "Actions": [
     {
       "Icon": "images/agh",
-      "Name": "Toggle AdGuard Home",
+      "Name": "Toggle AdGuard Home Protection",
       "States": [
         {
           "Image": "images/agh"
@@ -35,8 +35,8 @@
           "Image": "images/agh_off"
         }
       ],
-      "Tooltip": "Completely toggles AdGuard Home",
-      "UUID": "dev.mdawson.agh.toggle"
+      "Tooltip": "Toggles AdGuard Home Protection. Effectively a master switch",
+      "UUID": "dev.mdawson.agh.toggle_protection"
     },
     {
       "Icon": "images/agh",

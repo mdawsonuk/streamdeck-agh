@@ -3,6 +3,13 @@ var instances = {}
 var globalSettings = null;
 var adGuardHome = null;
 
+const TOGGLE_PROTECTION = "dev.mdawson.agh.toggle_protection";
+const TOGGLE_FILTERING = "dev.mdawson.agh.toggle_filtering";
+const TOGGLE_SAFE_BROWSING = "dev.mdawson.agh.toggle_safe_browsing";
+const TOGGLE_PARENTAL_CONTROLS = "dev.mdawson.agh.toggle_parental_controls";
+const TOGGLE_SAFE_SEARCH = "dev.mdawson.agh.toggle_safe_search";
+const TOGGLE_QUERY_LOG = "dev.mdawson.agh.toggle_query_log";
+
 // called by Stream Deck when the plugin is initialised
 function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, inInfo) {
     websocket = new WebSocket("ws://127.0.0.1:" + inPort);
@@ -28,7 +35,7 @@ function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, in
         if (event == "willAppear") {
             setupInstance(context, action, jsonObj.payload.settings);
         } else if (event == "willDisappear") {
-            if ("poller" in instances[context]) {
+            if (instances[context] && "poller" in instances[context]) {
                 clearInterval(instances[context].poller);
             }
             delete instances[context];
@@ -48,9 +55,11 @@ function connectElgatoStreamDeckSocket(inPort, inPluginUUID, inRegisterEvent, in
             for (let context in instances) {
                 log("Updating instances with new global settings");
                 updateStats(context);
+                // Just get the state
+                elgatoOnKeyDown(context, instances[context].action, false);
             }
         } else if (event === "keyDown") {
-            alert("Key presses are not yet implemented");
+            elgatoOnKeyDown(context, action, true);
         }
     }
 }
@@ -63,10 +72,141 @@ function setupInstance(context, action, settings) {
     if ("poller" in instances[context]) {
         clearInterval(instances[context].poller);
     }
+    if (adGuardHome) {
+        elgatoOnKeyDown(context, action, false);
+    }
     // Set the timer to run based on what the user has set
     instances[context].poller = setInterval(updateStats, getInterval(settings.agh_polling_interval), context);
     updateStats(context);
     log(JSON.stringify(instances));
+}
+
+function elgatoOnKeyDown(context, action, run) {
+    switch (action) {
+        case TOGGLE_PROTECTION:
+            protectionButton(context, run);
+            break;
+        case TOGGLE_FILTERING:
+            filteringButton(context, run);
+            break;
+        case TOGGLE_SAFE_BROWSING:
+            safeBrowsingButton(context, run);
+            break;
+        case TOGGLE_PARENTAL_CONTROLS:
+            parentalControlsButton(context, run);
+            break;
+        case TOGGLE_SAFE_SEARCH:
+            safeSearchButton(context, run);
+            break;
+        case TOGGLE_QUERY_LOG:
+            queryLogButton(context, run);
+            break;
+        default:
+            log("Running keyDown for " + action);
+            break;
+    }
+}
+
+function protectionButton(context, run) {
+    if (run) {
+        adGuardHome.setProtectionEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+            }
+        });
+    } else {
+        adGuardHome.getProtectionEnabled(state => {
+            instances[context].state = state;
+            setState(context, instances[context].state);
+        });
+    }
+}
+
+function filteringButton(context, run) {
+    if (run) {
+        adGuardHome.setFilteringEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+                log("Set state for Filtering to " + instances[context].state);
+            }
+        });
+    } else {
+        adGuardHome.getFilteringEnabled(state => {
+            log("Initial state for Filtering is " + state);
+            instances[context].state = state;
+            setState(context, instances[context].state);
+        });
+    }
+}
+
+function safeBrowsingButton(context, run) {
+    if (run) {
+        adGuardHome.setSafeBrowsingEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+                log("Set state for Safe Browsing to " + instances[context].state);
+            }
+        });
+    } else {
+        adGuardHome.getSafeBrowsingEnabled(state => {
+            log("Initial state for Safe Browsing is " + state);
+            instances[context].state = state;
+            setState(context, instances[context].state);
+        });
+    }
+}
+
+function parentalControlsButton(context, run) {
+    if (run) {
+        adGuardHome.setParentalControlsEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+                log("Set state for Parental Controls to " + instances[context].state);
+            }
+        });
+    } else {
+        adGuardHome.getParentalControlsEnabled(state => {
+            log("Initial state for Parental Controls is " + state);
+            instances[context].state = state;
+            setState(context, instances[context].state);
+        });
+    }
+}
+
+function safeSearchButton(context, run) {
+    if (run) {
+        adGuardHome.setSafesearchEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+            }
+        });
+    } else {
+        adGuardHome.getSafesearchEnabled(state => {
+            instances[context].state = state;
+            setState(context, instances[context].state);
+        });
+    }
+}
+
+function queryLogButton(context, run) {
+    if (run) {
+        adGuardHome.setQueryLogEnabled(instances[context].state, success => {
+            if (success) {
+                instances[context].state = !instances[context].state;
+                setState(context, instances[context].state);
+            }
+        });
+    } else {
+        adGuardHome.getQueryLogEnabled(state => {
+            instances[context].state = state;
+            setState(context, instances[context].state);
+        });
+    }
 }
 
 function updateStats(context) {
@@ -87,7 +227,7 @@ function updateStats(context) {
             adGuardHome.getSafeBrowsingCount((c, s) => setTitle(context, c + " malicious\nqueries\nblocked", s))
             break;
         case "blocked_adult":
-            adGuardHome.getFilterBlockCount((c, s) => setTitle(context, c + "\nadult sites\nblocked", s))
+            adGuardHome.getParentalFilterCount((c, s) => setTitle(context, c + "\nadult sites\nblocked", s))
             break;
         case "enforced_safesearch":
             adGuardHome.getSafeSearchCount((c, s) => setTitle(context, c + "\nsafe search\nrequests\nenforced", s))
@@ -175,4 +315,14 @@ function setTitle(context, title, status) {
             break;
     }
 
+}
+
+function setState(context, state) {
+    send({
+        "event": "setState",
+        "context": context,
+        "payload": {
+            "state": state == true ? 0 : 1
+        }
+    });
 }

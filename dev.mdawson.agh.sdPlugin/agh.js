@@ -18,6 +18,116 @@ class AdGuardHomeAPI {
         });
     }
 
+    //#region Protection
+
+    getProtectionEnabled(callback) {
+        this.request("dns_info", result => {
+            callback(result.data["protection_enabled"] == true);
+        });
+    }
+
+    setProtectionEnabled(currentStatus, callback) {
+        if (currentStatus) {
+            this.request("dns_config", result => callback(result.status === OK), "POST", { protection_enabled: false });
+        } else {
+            this.request("dns_config", result => callback(result.status === OK), "POST", { protection_enabled: true });
+        }
+    }
+
+    //#endregion
+
+    //#region Filtering
+
+    getFilteringEnabled(callback) {
+        this.request("filtering/status", result => {
+            callback(result.data["enabled"] == true);
+        });
+    }
+
+    setFilteringEnabled(currentStatus, callback) {
+        if (currentStatus) {
+            this.request("filtering/config", result => callback(result.status === OK), "POST", { enabled: false });
+        } else {
+            this.request("filtering/config", result => callback(result.status === OK), "POST", { enabled: true });
+        }
+    }
+
+    //#endregion
+
+    //#region Safe Browsing
+
+    getSafeBrowsingEnabled(callback) {
+        this.request("safebrowsing/status", result => {
+            callback(result.data["enabled"] == true);
+        });
+    }
+
+    setSafeBrowsingEnabled(currentStatus, callback) {
+        if (currentStatus) {
+            this.request("safebrowsing/disable", result => callback(result.status === OK), "POST");
+        } else {
+            this.request("safebrowsing/enable", result => callback(result.status === OK), "POST");
+        }
+    }
+
+    //#endregion
+
+    //#region Parental Controls
+
+    getParentalControlsEnabled(callback) {
+        this.request("parental/status", result => {
+            callback(result.data["enabled"] == true);
+        });
+    }
+
+    setParentalControlsEnabled(currentStatus, callback) {
+        if (currentStatus) {
+            this.request("parental/disable", result => callback(result.status === OK), "POST");
+        } else {
+            this.request("parental/enable", result => callback(result.status === OK), "POST");
+        }
+    }
+
+    //#endregion
+
+    //#region Safe Search
+
+    getSafesearchEnabled(callback) {
+        this.request("safesearch/status", result => {
+            callback(result.data["enabled"] == true);
+        });
+    }
+
+    setSafesearchEnabled(currentStatus, callback) {
+        if (currentStatus) {
+            this.request("safesearch/disable", result => callback(result.status === OK), "POST");
+        } else {
+            this.request("safesearch/enable", result => callback(result.status === OK), "POST");
+        }
+    }
+
+    //#endregion
+
+    //#region Query Log
+
+    getQueryLogEnabled(callback) {
+        this.request("querylog_info", result => {
+            callback(result.data["enabled"] == true);
+        });
+    }
+
+    setQueryLogEnabled(currentStatus, callback) {
+        if (currentStatus) {
+            this.request("querylog_config", result => callback(result.status === OK), "POST", { enabled: false });
+        } else {
+            this.request("querylog_config", result => callback(result.status === OK), "POST", { enabled: true });
+        }
+    }
+
+    //#endregion
+
+    //#region Stats
+
     getRuleCount(callback) {
         this.request("filtering/status", (response, status) => {
             let count = 0;
@@ -30,8 +140,6 @@ class AdGuardHomeAPI {
         })
     }
 
-    //#region Stats
-
     getDnsQueryCount(callback) {
         this.statsRequest("num_dns_queries", (d, s) => callback(d, s));
     }
@@ -40,11 +148,10 @@ class AdGuardHomeAPI {
         // Empty string to get all stats data returned
         this.statsRequest("", (data, status) => {
             // Avoid dividing by zero
-            log(status);
             if (status !== OK || data === null) {
                 callback(0, status);
             }
-            if (data.num_dns_queries === 0) {
+            if (data.num_blocked_filtering === 0 || data.num_dns_queries === 0) {
                 callback(0, status);
             }
             callback((data.num_blocked_filtering / data.num_dns_queries * 100).toFixed(2), status);
@@ -83,14 +190,14 @@ class AdGuardHomeAPI {
 
     //#endregion
 
-    request(endpoint, callback) {
+    request(endpoint, callback, method = "GET", data = null) {
         var proto = this.https ? "https://" : "http://";
 
         var url = proto + this.url + "/control/" + endpoint;
 
         var xhr = new XMLHttpRequest();
         xhr.timeout = 2000;
-        xhr.open("GET", url);
+        xhr.open(method, url);
 
         xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
 
@@ -108,10 +215,17 @@ class AdGuardHomeAPI {
                         status = UNKNOWN_ERROR;
                         break;
                 }
-                callback({
-                    status: status,
-                    data: xhr.status === 200 ? JSON.parse(xhr.response) : null
-                })
+                if (method == "GET") {
+                    callback({
+                        status: status,
+                        data: xhr.status === 200 ? JSON.parse(xhr.response) : null
+                    })
+                } else if (method == "POST") {
+                    callback({
+                        status: status,
+                        data: null
+                    })
+                }
             }
         };
 
@@ -122,6 +236,10 @@ class AdGuardHomeAPI {
             })
         }
 
-        xhr.send();
+        if (data !== null) {
+            xhr.send(JSON.stringify(data));
+        } else {
+            xhr.send();
+        }
     }
 }
