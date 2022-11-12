@@ -198,7 +198,10 @@ class AdGuardHomeAPI {
         var xhr = new XMLHttpRequest();
         xhr.timeout = 2000;
         xhr.open(method, url);
-
+        // AGH now requires POST requests to set the Content-Type header
+        if (method == "POST") {
+            xhr.setRequestHeader("Content-Type", "application/json");
+        }
         xhr.setRequestHeader("Authorization", "Basic " + btoa(this.username + ":" + this.password));
 
         xhr.onreadystatechange = function () {
